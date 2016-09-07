@@ -22,11 +22,8 @@
 * limitations under the License.
 */
 
-import ReedSolomonDecoder from './rsdecoder';
-import GF256 from './gf256';
-import BitMatrixParser from './bmparser';
-import DataBlock from './datablock';
-import QRCodeDataBlockReader from './databr';
+/* globals ReedSolomonDecoder, GF256, BitMatrixParser, DataBlock, QRCodeDataBlockReader */
+
 
 var Decoder = {};
 Decoder.rsDecoder = new ReedSolomonDecoder(GF256.QR_CODE_FIELD);
@@ -54,7 +51,7 @@ Decoder.correctErrors = function(codewordBytes,  numDataCodewords) {
 Decoder.decode = function(bits) {
   var parser = new BitMatrixParser(bits);
   var version = parser.readVersion();
-  var ecLevel = parser.readFormatInformation().errorCorrectionLevel;
+  var ecLevel = parser.readFormatInformation().ErrorCorrectionLevel;
 
   // Read codewords
   var codewords = parser.readCodewords();
@@ -65,7 +62,7 @@ Decoder.decode = function(bits) {
   // Count total number of data bytes
   var totalBytes = 0;
   for (var i = 0; i < dataBlocks.length; i++) {
-    totalBytes += dataBlocks[i].numDataCodewords;
+    totalBytes += dataBlocks[i].NumDataCodewords;
   }
   var resultBytes = new Array(totalBytes);
   var resultOffset = 0;
@@ -73,8 +70,8 @@ Decoder.decode = function(bits) {
   // Error-correct and copy data blocks together into a stream of bytes
   for (var j = 0; j < dataBlocks.length; j++) {
     var dataBlock = dataBlocks[j];
-    var codewordBytes = dataBlock.codewords;
-    var numDataCodewords = dataBlock.numDataCodewords;
+    var codewordBytes = dataBlock.Codewords;
+    var numDataCodewords = dataBlock.NumDataCodewords;
     Decoder.correctErrors(codewordBytes, numDataCodewords);
     for (var i = 0; i < numDataCodewords; i++) {
       resultBytes[resultOffset++] = codewordBytes[i];
@@ -82,8 +79,6 @@ Decoder.decode = function(bits) {
   }
 
   // Decode the contents of that stream of bytes
-  var reader = new QRCodeDataBlockReader(resultBytes, version.versionNumber, ecLevel.bits);
+  var reader = new QRCodeDataBlockReader(resultBytes, version.VersionNumber, ecLevel.Bits);
   return reader;
 };
-
-export default Decoder;

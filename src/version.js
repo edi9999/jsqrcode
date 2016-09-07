@@ -22,12 +22,23 @@
 * limitations under the License.
 */
 
-import FormatInformation from './formatinf';
-import BitMatrix from './bitmat';
+/* globals BitMatrix, FormatInformation */
+
 
 function ECB(count,  dataCodewords) {
   this.count = count;
   this.dataCodewords = dataCodewords;
+
+  Object.defineProperty(this, "Count", {
+    get: function() {
+      return this.count;
+    }
+  });
+  Object.defineProperty(this, "DataCodewords", {
+    get: function() {
+      return this.dataCodewords;
+    }
+  });
 }
 
 function ECBlocks(ecCodewordsPerBlock,  ecBlocks1,  ecBlocks2) {
@@ -36,91 +47,112 @@ function ECBlocks(ecCodewordsPerBlock,  ecBlocks1,  ecBlocks2) {
     this.ecBlocks = [ecBlocks1, ecBlocks2];
   else
     this.ecBlocks = [ecBlocks1];
+
+  Object.defineProperty(this, "ECCodewordsPerBlock", {
+    get: function() {
+      return this.ecCodewordsPerBlock;
+    }
+  });
+
+  Object.defineProperty(this, "TotalECCodewords", {
+    get: function() {
+      return  this.ecCodewordsPerBlock * this.NumBlocks;
+    }
+  });
+
+  Object.defineProperty(this, "NumBlocks", {
+    get: function() {
+      var total = 0;
+      for (var i = 0; i < this.ecBlocks.length; i++) {
+        total += this.ecBlocks[i].length;
+      }
+      return total;
+    }
+  });
+
+  this.getECBlocks = function() {
+    return this.ecBlocks;
+  };
 }
 
-Object.defineProperty(ECBlocks.prototype, "TotalECCodewords", {
-  get: function() {
-    return  this.ecCodewordsPerBlock * this.NumBlocks;
-  }
-});
-
-Object.defineProperty(ECBlocks.prototype, "NumBlocks", {
-  get: function() {
-    var total = 0;
-    for (var i = 0; i < this.ecBlocks.length; i++) {
-      total += this.ecBlocks[i].length;
-    }
-    return total;
-  }
-});
-
-ECBlocks.prototype.getECBlocks = function() {
-  return this.ecBlocks;
-};
-
-export default function Version(versionNumber,  alignmentPatternCenters,  ecBlocks1,  ecBlocks2,  ecBlocks3,  ecBlocks4) {
+function Version(versionNumber,  alignmentPatternCenters,  ecBlocks1,  ecBlocks2,  ecBlocks3,  ecBlocks4) {
   this.versionNumber = versionNumber;
   this.alignmentPatternCenters = alignmentPatternCenters;
   this.ecBlocks = [ecBlocks1, ecBlocks2, ecBlocks3, ecBlocks4];
 
   var total = 0;
-  var ecCodewords = ecBlocks1.ecCodewordsPerBlock;
+  var ecCodewords = ecBlocks1.ECCodewordsPerBlock;
   var ecbArray = ecBlocks1.getECBlocks();
   for (var i = 0; i < ecbArray.length; i++) {
     var ecBlock = ecbArray[i];
-    total += ecBlock.count * (ecBlock.dataCodewords + ecCodewords);
+    total += ecBlock.Count * (ecBlock.DataCodewords + ecCodewords);
   }
   this.totalCodewords = total;
-}
 
-Object.defineProperty(Version.prototype, "DimensionForVersion", {
-  get: function() {
-    return  17 + 4 * this.versionNumber;
-  }
-});
-
-Version.prototype.buildFunctionPattern = function() {
-  var dimension = this.DimensionForVersion;
-  var bitMatrix = new BitMatrix(dimension);
-
-  // Top left finder pattern + separator + format
-  bitMatrix.setRegion(0, 0, 9, 9);
-  // Top right finder pattern + separator + format
-  bitMatrix.setRegion(dimension - 8, 0, 8, 9);
-  // Bottom left finder pattern + separator + format
-  bitMatrix.setRegion(0, dimension - 8, 9, 8);
-
-  // Alignment patterns
-  var max = this.alignmentPatternCenters.length;
-  for (var x = 0; x < max; x++) {
-    var i = this.alignmentPatternCenters[x] - 2;
-    for (var y = 0; y < max; y++) {
-      if ((x == 0 && (y == 0 || y == max - 1)) || (x == max - 1 && y == 0)) {
-        // No alignment patterns near the three finder paterns
-        continue;
-      }
-      bitMatrix.setRegion(this.alignmentPatternCenters[y] - 2, i, 5, 5);
+  Object.defineProperty(this, "VersionNumber", {
+    get: function() {
+      return  this.versionNumber;
     }
-  }
+  });
 
-  // Vertical timing pattern
-  bitMatrix.setRegion(6, 9, 1, dimension - 17);
-  // Horizontal timing pattern
-  bitMatrix.setRegion(9, 6, dimension - 17, 1);
+  Object.defineProperty(this, "AlignmentPatternCenters", {
+    get: function() {
+      return  this.alignmentPatternCenters;
+    }
+  });
+  Object.defineProperty(this, "TotalCodewords", {
+    get: function() {
+      return  this.totalCodewords;
+    }
+  });
+  Object.defineProperty(this, "DimensionForVersion", {
+    get: function() {
+      return  17 + 4 * this.versionNumber;
+    }
+  });
 
-  if (this.versionNumber > 6) {
-    // Version info, top right
-    bitMatrix.setRegion(dimension - 11, 0, 3, 6);
-    // Version info, bottom left
-    bitMatrix.setRegion(0, dimension - 11, 6, 3);
-  }
+  this.buildFunctionPattern = function() {
+    var dimension = this.DimensionForVersion;
+    var bitMatrix = new BitMatrix(dimension);
 
-  return bitMatrix;
-};
+    // Top left finder pattern + separator + format
+    bitMatrix.setRegion(0, 0, 9, 9);
+    // Top right finder pattern + separator + format
+    bitMatrix.setRegion(dimension - 8, 0, 8, 9);
+    // Bottom left finder pattern + separator + format
+    bitMatrix.setRegion(0, dimension - 8, 9, 8);
 
-Version.prototype.getECBlocksForLevel = function(ecLevel) {
-  return this.ecBlocks[ecLevel.ordinal()];
-};
+    // Alignment patterns
+    var max = this.alignmentPatternCenters.length;
+    for (var x = 0; x < max; x++) {
+      var i = this.alignmentPatternCenters[x] - 2;
+      for (var y = 0; y < max; y++) {
+        if ((x == 0 && (y == 0 || y == max - 1)) || (x == max - 1 && y == 0)) {
+          // No alignment patterns near the three finder paterns
+          continue;
+        }
+        bitMatrix.setRegion(this.alignmentPatternCenters[y] - 2, i, 5, 5);
+      }
+    }
+
+    // Vertical timing pattern
+    bitMatrix.setRegion(6, 9, 1, dimension - 17);
+    // Horizontal timing pattern
+    bitMatrix.setRegion(9, 6, dimension - 17, 1);
+
+    if (this.versionNumber > 6) {
+      // Version info, top right
+      bitMatrix.setRegion(dimension - 11, 0, 3, 6);
+      // Version info, bottom left
+      bitMatrix.setRegion(0, dimension - 11, 6, 3);
+    }
+
+    return bitMatrix;
+  };
+  this.getECBlocksForLevel = function(ecLevel) {
+    return this.ecBlocks[ecLevel.ordinal()];
+  };
+}
 
 Version.VERSION_DECODE_INFO = [
   0x07C94,
