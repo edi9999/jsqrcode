@@ -6,25 +6,22 @@
 */
 
 /*
-*
-* Copyright 2007 ZXing authors
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
-import GF256 from './gf256';
-
-export default function GF256Poly(field,  coefficients) {
+ *
+ * Copyright 2007 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+export default function GF256Poly(field, coefficients) {
   if (coefficients == null || coefficients.length == 0) {
     throw "System.ArgumentException";
   }
@@ -74,13 +71,13 @@ GF256Poly.prototype.evaluateAt = function(a) {
     // Just the sum of the coefficients
     var result = 0;
     for (var i = 0; i < size; i++) {
-      result = GF256.addOrSubtract(result, this.coefficients[i]);
+      result = this.addOrSubtract256(result, this.coefficients[i]);
     }
     return result;
   }
   var result2 = this.coefficients[0];
   for (var i = 1; i < size; i++) {
-    result2 = GF256.addOrSubtract(this.field.multiply(a, result2), this.coefficients[i]);
+    result2 = this.addOrSubtract256(this.field.multiply(a, result2), this.coefficients[i]);
   }
   return result2;
 };
@@ -106,13 +103,17 @@ GF256Poly.prototype.addOrSubtract = function(other) {
   var sumDiff = new Array(largerCoefficients.length);
   var lengthDiff = largerCoefficients.length - smallerCoefficients.length;
   // Copy high-order terms only found in higher-degree polynomial's coefficients
-  for (var ci = 0; ci < lengthDiff; ci++)sumDiff[ci] = largerCoefficients[ci];
+  for (var ci = 0; ci < lengthDiff; ci++) sumDiff[ci] = largerCoefficients[ci];
 
   for (var i = lengthDiff; i < largerCoefficients.length; i++) {
-    sumDiff[i] = GF256.addOrSubtract(smallerCoefficients[i - lengthDiff], largerCoefficients[i]);
+    sumDiff[i] = this.addOrSubtract256(smallerCoefficients[i - lengthDiff], largerCoefficients[i]);
   }
 
   return new GF256Poly(this.field, sumDiff);
+};
+
+GF256Poly.prototype.addOrSubtract256 = function(a, b) {
+  return a ^ b;
 };
 
 GF256Poly.prototype.multiply1 = function(other) {
@@ -130,7 +131,7 @@ GF256Poly.prototype.multiply1 = function(other) {
   for (var i = 0; i < aLength; i++) {
     var aCoeff = aCoefficients[i];
     for (var j = 0; j < bLength; j++) {
-      product[i + j] = GF256.addOrSubtract(product[i + j], this.field.multiply(aCoeff, bCoefficients[j]));
+      product[i + j] = this.addOrSubtract256(product[i + j], this.field.multiply(aCoeff, bCoefficients[j]));
     }
   }
   return new GF256Poly(this.field, product);
@@ -151,7 +152,7 @@ GF256Poly.prototype.multiply2 = function(scalar) {
   return new GF256Poly(this.field, product);
 };
 
-GF256Poly.prototype.multiplyByMonomial = function(degree,  coefficient) {
+GF256Poly.prototype.multiplyByMonomial = function(degree, coefficient) {
   if (degree < 0) {
     throw "System.ArgumentException";
   }
@@ -160,7 +161,7 @@ GF256Poly.prototype.multiplyByMonomial = function(degree,  coefficient) {
   }
   var size = this.coefficients.length;
   var product = new Array(size + degree);
-  for (var i = 0; i < product.length; i++)product[i] = 0;
+  for (var i = 0; i < product.length; i++) product[i] = 0;
   for (var i = 0; i < size; i++) {
     product[i] = this.field.multiply(this.coefficients[i], coefficient);
   }
