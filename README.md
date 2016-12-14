@@ -93,3 +93,8 @@ You will have access to the global variable `QrCode` if you do the following in 
 ```
 
 See [examples/browser-upload/index.html](examples/browser-upload/index.html) for a very basic example using a file upload.
+
+Changelog
+===========================
+
+See [`CHANGELOG.md`](CHANGELOG.md).
