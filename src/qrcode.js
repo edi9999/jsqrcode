@@ -153,7 +153,7 @@ QrCode.prototype.process = function(imageData) {
     console.log('QR Code processing time (ms): ' + time);
   }
 
-  return {url: this.decode_utf8(str), points: qrCodeMatrix.bits};
+  return {url: this.decode_utf8(str), points: qRCodeMatrix.points};
 };
 
 QrCode.prototype.getPixel = function(imageData, x, y) {
