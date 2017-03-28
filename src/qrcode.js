@@ -52,20 +52,8 @@ QrCode.prototype.decode = function(src, data) {
 
   }).bind(this);
 
-  if (src == undefined) {
-    /* decode from canvas #qr-canvas */
-
-    var canvas_qr = document.getElementById("qr-canvas");
-    var context = canvas_qr.getContext('2d');
-
-    this.width = canvas_qr.width;
-    this.height = canvas_qr.height;
-    this.imagedata = context.getImageData(0, 0, this.width, this.height);
-
-    decode();
-  } else if (src.width != undefined) {
+  if (src != undefined && src.width != undefined) {
     /* decode from canvas canvas.context.getImageData */
-
     this.width = src.width;
     this.height = src.height;
     this.imagedata = {"data": data || src.data};
@@ -153,7 +141,7 @@ QrCode.prototype.process = function(imageData) {
     console.log('QR Code processing time (ms): ' + time);
   }
 
-  return this.decode_utf8(str);
+  return {result: this.decode_utf8(str), points: qRCodeMatrix.points};
 };
 
 QrCode.prototype.getPixel = function(imageData, x, y) {
