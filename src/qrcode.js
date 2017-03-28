@@ -45,7 +45,7 @@ QrCode.prototype.decode = function(src, data) {
     }
 
     if (this.callback != null) {
-      this.callback(this.result, this.error);
+      this.callback(this.error, this.result);
     }
 
     return this.result;
@@ -102,7 +102,7 @@ QrCode.prototype.decode = function(src, data) {
         this.imagedata = context.getImageData(0, 0, image.width, image.height);
       } catch (e) {
         this.result = "Cross domain image reading not supported in your browser! Save it to your computer then drag and drop the file!";
-        if (this.callback != null) return this.callback(this.result);
+        if (this.callback != null) return this.callback(null, this.result);
       }
 
       decode();

@@ -25,12 +25,12 @@
     <script type="text/javascript">
       (function() {
         'use strict';
-        
+
         var upload = document.getElementById('upload');
         var preview = document.getElementById('preview');
         var qr = new QrCode();
 
-        qr.callback = function(result,err) {
+        qr.callback = function(err, result) {
           var span = document.querySelector('span') || document.createElement('span');
           if(result){
             span.textContent = result;
@@ -46,7 +46,7 @@
           for (var i = 0; i < this.files.length; i++) {
             var file = this.files[i];
             var imageType = /^image\//;
-            
+
             if (!imageType.test(file.type)) {
               throw new Error('File type not valid');
             }

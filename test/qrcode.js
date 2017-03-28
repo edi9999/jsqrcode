@@ -11,7 +11,10 @@ it('should work with basic image', function(done) {
       return done(err);
     }
     var qr = new QrCode();
-    qr.callback = function(result) {
+    qr.callback = function(error, result) {
+      if (error) {
+        done(error);
+      }
       expect(result).to.equal('Test');
       done();
     };
@@ -27,7 +30,10 @@ it('should work with imageData format', function(done) {
       return done(err);
     }
     var qr = new QrCode();
-    qr.callback = function(result) {
+    qr.callback = function(error, result) {
+      if (error) {
+        done(error);
+      }
       expect(result).to.equal('Test');
       done();
     };

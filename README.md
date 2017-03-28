@@ -30,7 +30,13 @@ var qr = new QrCode();
 Set its callback to a custom function:
 
 ```
-qr.callback = function(result,err) { if(result) console.log(result) }
+qr.callback = function(error, result) {
+  if(error) {
+    console.log(error)
+    return;
+  }
+  console.log(result)
+}
 ```
 
 Decode an image by its URL or Data URI:
@@ -89,3 +95,8 @@ You will have access to the global variable `QrCode` if you do the following in 
 ```
 
 See [examples/browser-upload/index.html](examples/browser-upload/index.html) for a very basic example using a file upload.
+
+Changelog
+===========================
+
+See [`CHANGELOG.md`](CHANGELOG.md).
