@@ -12,7 +12,7 @@ node_js:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo add-apt-repository ppa:dhor/myway
+  - sudo add-apt-repository --yes ppa:dhor/myway
   - sudo apt-get -qq update
   - sudo apt-get install graphicsmagick
   - nvm install 6
