@@ -6,7 +6,7 @@ var ImageParser = require("image-parser");
 it('should work with basic image', function(done) {
   var c = fs.readFileSync(__dirname + '/image.png');
   var img = new ImageParser(c);
-  img.parse((err) => {
+  img.parse(function(err) {
     if (err) {
       return done(err);
     }
@@ -22,7 +22,7 @@ it('should work with basic image', function(done) {
 it('should work with imageData format', function(done) {
   var c = fs.readFileSync(__dirname + '/image.png');
   var img = new ImageParser(c);
-  img.parse((err) => {
+  img.parse(function(err) {
     if (err) {
       return done(err);
     }
