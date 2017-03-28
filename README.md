@@ -1,7 +1,9 @@
 JavaScript QRCode reader for HTML5 enabled browser.
 ===================================================
 
-This is a port of Lazarsoft’s qrcode reader
+This was started as a port of Lazarsoft’s qrcode reader.
+
+It is a maintained fork, so feel free to open issues or PR !
 
 [![Build Status](https://travis-ci.org/edi9999/jsqrcode.svg?branch=master&style=flat)](https://travis-ci.org/edi9999/jsqrcode)
 

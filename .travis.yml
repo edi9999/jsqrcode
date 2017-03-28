@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 language: node_js
 
@@ -6,9 +6,15 @@ node_js:
     - "0.10"
     - "0.12"
     - "4"
+    - "5"
     - "6"
+    - "7"
 
 before_install:
+  - sudo apt-get -qq update
+  - sudo add-apt-repository --yes ppa:dhor/myway
+  - sudo apt-get -qq update
+  - sudo apt-get install graphicsmagick
   - nvm install 6
   - nvm use 6
 

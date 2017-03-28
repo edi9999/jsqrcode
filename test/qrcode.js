@@ -1,48 +1,47 @@
 var expect = require('chai').expect;
 var fs = require('fs');
-var PNG = require('png-js');
 var QrCode = require('../dist/index.js');
+var ImageParser = require("image-parser");
 
 it('should work with basic image', function(done) {
-
   var c = fs.readFileSync(__dirname + '/image.png');
-  var p = new PNG(c);
-
-  p.decode(function(data) {
-
+  var img = new ImageParser(c);
+  img.parse(function(err) {
+    if (err) {
+      return done(err);
+    }
     var qr = new QrCode();
     qr.callback = function(error, result) {
       if (error) {
         throw new Error(error);
       }
-
       expect(result).to.equal('Test');
       done();
     };
-    qr.decode(p, data);
+    qr.decode({width: img.width(), height: img.height()}, img._imgBuffer);
   });
 });
 
 it('should work with imageData format', function(done) {
-
   var c = fs.readFileSync(__dirname + '/image.png');
-  var p = new PNG(c);
-
-  p.decode(function(data) {
-
+  var img = new ImageParser(c);
+  img.parse(function(err) {
+    if (err) {
+      return done(err);
+    }
     var qr = new QrCode();
     qr.callback = function(error, result) {
       if (error) {
         throw new Error(error);
       }
-
+    qr.callback = function(result) {
       expect(result).to.equal('Test');
       done();
     };
     qr.decode({
-      height: p.height,
-      width: p.width,
-      data: data
+      height: img.height(),
+      width: img.width(),
+      data: img._imgBuffer
     });
   });
 });
