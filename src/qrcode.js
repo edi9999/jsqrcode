@@ -45,27 +45,15 @@ QrCode.prototype.decode = function(src, data) {
     }
 
     if (this.callback != null) {
-      this.callback(this.result, this.error);
+      this.callback(this.error, this.result);
     }
 
     return this.result;
 
   }).bind(this);
 
-  if (src == undefined) {
-    /* decode from canvas #qr-canvas */
-
-    var canvas_qr = document.getElementById("qr-canvas");
-    var context = canvas_qr.getContext('2d');
-
-    this.width = canvas_qr.width;
-    this.height = canvas_qr.height;
-    this.imagedata = context.getImageData(0, 0, this.width, this.height);
-
-    decode();
-  } else if (src.width != undefined) {
+  if (src != undefined && src.width != undefined) {
     /* decode from canvas canvas.context.getImageData */
-
     this.width = src.width;
     this.height = src.height;
     this.imagedata = {"data": data || src.data};
@@ -102,7 +90,7 @@ QrCode.prototype.decode = function(src, data) {
         this.imagedata = context.getImageData(0, 0, image.width, image.height);
       } catch (e) {
         this.result = "Cross domain image reading not supported in your browser! Save it to your computer then drag and drop the file!";
-        if (this.callback != null) return this.callback(this.result);
+        if (this.callback != null) return this.callback(null, this.result);
       }
 
       decode();
@@ -153,7 +141,7 @@ QrCode.prototype.process = function(imageData) {
     console.log('QR Code processing time (ms): ' + time);
   }
 
-  return this.decode_utf8(str);
+  return {result: this.decode_utf8(str), points: qRCodeMatrix.points};
 };
 
 QrCode.prototype.getPixel = function(imageData, x, y) {

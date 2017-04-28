@@ -1,7 +1,9 @@
 JavaScript QRCode reader for HTML5 enabled browser.
 ===================================================
 
-This is a port of Lazarsoft’s qrcode reader
+This was started as a port of Lazarsoft’s qrcode reader.
+
+It is a maintained fork, so feel free to open issues or PR !
 
 [![Build Status](https://travis-ci.org/edi9999/jsqrcode.svg?branch=master&style=flat)](https://travis-ci.org/edi9999/jsqrcode)
 
@@ -28,7 +30,13 @@ var qr = new QrCode();
 Set its callback to a custom function:
 
 ```
-qr.callback = function(result,err) { if(result) console.log(result) }
+qr.callback = function(error, result) {
+  if(error) {
+    console.log(error)
+    return;
+  }
+  console.log(result)
+}
 ```
 
 Decode an image by its URL or Data URI:
@@ -46,13 +54,6 @@ var data = context.getImageData(0, 0, width, height);
 qr.decode(data);
 ```
 
-Decode from canvas with "qr-canvas" ID:
-
-```
-qr.decode()
-```
-
-Building it yourself
 ====================
 
 If you want, you can build the script yourself.
@@ -87,3 +88,8 @@ You will have access to the global variable `QrCode` if you do the following in 
 ```
 
 See [examples/browser-upload/index.html](examples/browser-upload/index.html) for a very basic example using a file upload.
+
+Changelog
+=========
+
+See [`CHANGELOG.md`](CHANGELOG.md)\.
