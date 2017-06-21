@@ -57,7 +57,7 @@ ReedSolomonDecoder.prototype.decode = function(received, twoS) {
     if (position < 0) {
       throw "ReedSolomonException Bad error location";
     }
-    received[position] = GF256.addOrSubtract(received[position], errorMagnitudes[i]);
+    received[position] = GF256.prototype.addOrSubtract(received[position], errorMagnitudes[i]);
   }
 };
 
@@ -146,7 +146,7 @@ ReedSolomonDecoder.prototype.findErrorMagnitudes = function(errorEvaluator, erro
     var denominator = 1;
     for (var j = 0; j < s; j++) {
       if (i != j) {
-        denominator = this.field.multiply(denominator, GF256.addOrSubtract(1, this.field.multiply(errorLocations[j], xiInverse)));
+        denominator = this.field.multiply(denominator, GF256.prototype.addOrSubtract(1, this.field.multiply(errorLocations[j], xiInverse)));
       }
     }
     result[i] = this.field.multiply(errorEvaluator.evaluateAt(xiInverse), this.field.inverse(denominator));
