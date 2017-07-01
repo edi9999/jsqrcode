@@ -62,6 +62,9 @@ QrCode.prototype.decode = function(src, data) {
 
     decode();
   } else {
+    if (!Image) {
+      throw new Error("This source format is not supported in your environment, you need to pass an image buffer with width and height (see https://github.com/edi9999/jsqrcode/blob/master/test/qrcode.js)");
+    }
     /* decode from URL */
 
     var image = new Image();
