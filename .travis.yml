@@ -21,6 +21,7 @@ install:
   - npm install
 
 script:
+  - nvm install 8
   - nvm use 8
   - npm run build
   - nvm use $TRAVIS_NODE_VERSION
