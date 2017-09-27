@@ -16,15 +16,14 @@ before_install:
   - sudo add-apt-repository --yes ppa:dhor/myway
   - sudo apt-get -qq update
   - sudo apt-get install graphicsmagick
-  - nvm install 6
-  - nvm use 6
 
 install:
   - npm install
 
-before_script:
-  - nvm use $TRAVIS_NODE_VERSION
-
 script:
-  - npm run build-and-test
+  - nvm use 8
+  - npm run build
+  - nvm use $TRAVIS_NODE_VERSION
+  - npm test
+  - nvm use 8
   - npm run preversion
