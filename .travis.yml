@@ -26,5 +26,5 @@ before_script:
   - nvm use $TRAVIS_NODE_VERSION
 
 script:
-  - npm test
+  - npm run build-and-test
   - npm run preversion
