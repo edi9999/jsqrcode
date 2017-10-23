@@ -50,6 +50,46 @@ it("should work with jimp", function(done) {
   });
 });
 
+it("should work with a zxing qr code with jimp", function(done) {
+  var buffer = fs.readFileSync(__dirname + '/image-zxing.png');
+  Jimp.read(buffer, function(err, image) {
+    if (err) {
+      return done(err);
+    }
+    var qr = new QrCode();
+    qr.callback = function(err, result) {
+      if (err) {
+        return done(err);
+      }
+      expect(copy(result)).to.deep.equal({
+        "result": 'Test',
+        "points": [
+          {
+            "count": 2,
+            "estimatedModuleSize": 9,
+            "x": 34.5,
+            "y": 160.5,
+          },
+          {
+            "count": 3,
+            "estimatedModuleSize": 9,
+            "x": 34.5,
+            "y": 34.5,
+          },
+          {
+            "count": 2,
+            "estimatedModuleSize": 9.428571428571429,
+            "x": 160.5,
+            "y": 34.5,
+          }
+        ]
+      });
+      done();
+    };
+    qr.decode(image.bitmap);
+  });
+});
+
 it('should work with basic image', function(done) {
   var buffer = fs.readFileSync(__dirname + '/image.png');
   var img = new ImageParser(buffer);

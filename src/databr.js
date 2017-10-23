@@ -228,7 +228,7 @@ Object.defineProperty(QRCodeDataBlockReader.prototype, "DataByte", {
       }
       //if (mode != 1 && mode != 2 && mode != 4 && mode != 8)
       //}
-      if (mode != MODE_NUMBER && mode != MODE_ROMAN_AND_NUMBER && mode != MODE_8BIT_BYTE && mode != MODE_KANJI) {
+      if (mode != MODE_NUMBER && mode != MODE_ROMAN_AND_NUMBER && mode != MODE_8BIT_BYTE && mode != MODE_KANJI && mode != 7) {
         /*          canvas.println("Invalid mode: " + mode);
          mode = guessMode(mode);
          canvas.println("Guessed mode: " + mode); */
