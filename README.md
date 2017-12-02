@@ -134,6 +134,13 @@ To run the build process and generate a JavaScript file called `dist/index.js` y
 npm run build
 
 ```
+To minify `dist/index.js` and generate `dist/index.min.js` you should run:
+
+```
+
+npm run minify
+
+```
 
 To run the tests:
 
