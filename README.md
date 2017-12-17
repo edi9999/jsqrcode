@@ -1,9 +1,11 @@
 JavaScript QRCode reader for HTML5 enabled browser.
 ===================================================
 
-This was started as a port of Lazarsoft’s qrcode reader.
+**This project is no more maintained**. **Explanation** : Lazarsoft's qrcode reader is not maintained since 2 years, so I decided to fork it one year ago to fix some issues. However, there are many things missing on this project, such as proper test cases. Also, I still haven't had the time to understand how the qrcode processing really works under the hood. On the other side, a new library called : https://github.com/cozmo/jsQR exists for over a year, is maintained and has multiple test cases. I have personally moved to this library instead.
 
-It is a maintained fork, so feel free to open issues or PR !
+I'm letting the README as it was before below.
+
+This was started as a port of Lazarsoft’s qrcode reader.
 
 [![Build Status](https://travis-ci.org/edi9999/jsqrcode.svg?branch=master&style=flat)](https://travis-ci.org/edi9999/jsqrcode)
 
@@ -134,6 +136,7 @@ To run the build process and generate a JavaScript file called `dist/index.js` y
 npm run build
 
 ```
+
 To minify `dist/index.js` and generate `dist/index.min.js` you should run:
 
 ```
