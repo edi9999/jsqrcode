@@ -59,9 +59,11 @@ QrCode.prototype.decode = function(src, data) {
     this.imagedata = {"data": data || src.data};
     this.imagedata.width = src.width;
     this.imagedata.height = src.height;
+    this.channel = this.imagedata.data.length / this.width / this.height;
 
     decode();
   } else {
+    this.channel = 4;
     if (typeof Image === "undefined") {
       throw new Error("This source format is not supported in your environment, you need to pass an image buffer with width and height (see https://github.com/edi9999/jsqrcode/blob/master/test/qrcode.js)");
     }
@@ -154,7 +156,8 @@ QrCode.prototype.getPixel = function(imageData, x, y) {
   if (imageData.height < y) {
     throw "point error";
   }
-  var point = (x * 4) + (y * imageData.width * 4);
+  var point = (x * this.channel) + (y * imageData.width * this.channel);
+  if (this.channel == 1) return imageData.data[point];
   return (imageData.data[point] * 33 + imageData.data[point + 1] * 34 + imageData.data[point + 2] * 33) / 100;
 };
 
