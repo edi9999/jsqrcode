@@ -141,10 +141,9 @@ QrCode.prototype.process = function(imageData) {
   }
 
   if (this.debug) {
-    
     var end = Date.now();
     var time = end - start;
-    
+
     console.log('QR Code processing time (ms): ' + time);
   }
 
@@ -174,8 +173,8 @@ QrCode.prototype.binarize = function(th) {
 QrCode.prototype.getMiddleBrightnessPerArea = function(imageData) {
   var numSqrtArea = 4;
   //obtain middle brightness((min + max) / 2) per area
-  var areaWidth = (imageData.width / numSqrtArea)|0;
-  var areaHeight = (imageData.height / numSqrtArea)|0;
+  var areaWidth = (imageData.width / numSqrtArea) | 0;
+  var areaHeight = (imageData.height / numSqrtArea) | 0;
   var minmax = [];
   for (var i = 0; i < numSqrtArea; i++) {
     minmax[i] = [];
@@ -203,7 +202,7 @@ QrCode.prototype.getMiddleBrightnessPerArea = function(imageData) {
   }
   for (var ay = 0; ay < numSqrtArea; ay++) {
     for (var ax = 0; ax < numSqrtArea; ax++) {
-      middle[ax][ay] = ((minmax[ax][ay][0] + minmax[ax][ay][1]) / 2)|0;
+      middle[ax][ay] = ((minmax[ax][ay][0] + minmax[ax][ay][1]) / 2) | 0;
     }
   }
 
@@ -213,11 +212,11 @@ QrCode.prototype.getMiddleBrightnessPerArea = function(imageData) {
 QrCode.prototype.grayScaleToBitmap = function(grayScaleImageData) {
   var middle = this.getMiddleBrightnessPerArea(grayScaleImageData);
   var sqrtNumArea = middle.length;
-  var areaWidth = Math.floor(grayScaleImageData.width / sqrtNumArea);
-  var areaHeight = Math.floor(grayScaleImageData.height / sqrtNumArea);
+  var areaWidth = (grayScaleImageData.width / sqrtNumArea) | 0;
+  var areaHeight = (grayScaleImageData.height / sqrtNumArea) | 0;
 
-  var ay,ax,dy,dx;
-  
+  var ay, ax, dy, dx;
+
   for (ay = 0; ay < sqrtNumArea; ay++) {
     for (ax = 0; ax < sqrtNumArea; ax++) {
       for (dy = 0; dy < areaHeight; dy++) {
