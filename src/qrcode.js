@@ -32,13 +32,13 @@ export default function QrCode() {
 }
 
 
-QrCode.prototype.decode = function(src, data) {
+QrCode.prototype.decode = function(src, data, binary) {
 
   var decode = (function() {
 
     try {
       this.error = undefined;
-      this.result = this.process(this.imagedata);
+      this.result = this.process(this.imagedata, binary);
     } catch (e) {
       this.error = e;
       this.result = undefined;
@@ -109,7 +109,7 @@ QrCode.prototype.decode_utf8 = function(s) {
   return decodeURIComponent(escape(s));
 };
 
-QrCode.prototype.process = function(imageData) {
+QrCode.prototype.process = function(imageData, binary) {
 
   var start = new Date().getTime();
 
@@ -132,19 +132,36 @@ QrCode.prototype.process = function(imageData) {
 
   var reader = Decoder.decode(qRCodeMatrix.bits);
   var data = reader.DataByte;
-  var str = "";
-  for (var i = 0; i < data.length; i++) {
-    for (var j = 0; j < data[i].length; j++)
-      str += String.fromCharCode(data[i][j]);
-  }
 
-  var end = new Date().getTime();
-  var time = end - start;
-  if (this.debug) {
-    console.log('QR Code processing time (ms): ' + time);
+  if (binary === true) {
+    var binaryData = [];
+    for (var i = 0; i < data.length; i++) {
+      for (var j = 0; j < data[i].length; j++)
+      binaryData.push(data[i][j]);
+    }
+  
+    var end = new Date().getTime();
+    var time = end - start;
+    if (this.debug) {
+      console.log('QR Code processing time (ms): ' + time);
+    }
+  
+    return {result: binaryData, points: qRCodeMatrix.points};
+  } else {
+    var str = "";
+    for (var i = 0; i < data.length; i++) {
+      for (var j = 0; j < data[i].length; j++)
+        str += String.fromCharCode(data[i][j]);
+    }
+  
+    var end = new Date().getTime();
+    var time = end - start;
+    if (this.debug) {
+      console.log('QR Code processing time (ms): ' + time);
+    }
+  
+    return {result: this.decode_utf8(str), points: qRCodeMatrix.points};
   }
-
-  return {result: this.decode_utf8(str), points: qRCodeMatrix.points};
 };
 
 QrCode.prototype.getPixel = function(imageData, x, y) {
